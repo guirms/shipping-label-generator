@@ -15,7 +15,6 @@ REQUEST_DELAY = 0.4
 # Service IDs to exclude (mini-envios = service 4)
 EXCLUDED_SERVICE_IDS = [4]
 
-
 class SuperfreteClient:
     def __init__(self, token: str, base_url: str):
         self.base_url = base_url

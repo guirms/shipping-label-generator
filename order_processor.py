@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime  # import para capturar a data/hora
 import logging
 import json
 from api_client import SuperfreteClient
@@ -33,10 +34,10 @@ def build_order_payload(order: dict, service: dict) -> dict:
             "postal_code": ORIGIN_POSTAL_CODE,
         },
         "to": {
-            "name": order["recipient_name"],
-            "phone": order["recipient_phone"],
-            "email": order["recipient_email"],
-            "document": order["recipient_document"],
+            "name": order["customer_name"],
+            "phone": order["customer_phone"],
+            "email": order["customer_email"],
+            "document": order["customer_document"],
             "address": order["address"],
             "complement": order.get("complement", ""),
             "number": order["number"],
@@ -82,7 +83,7 @@ async def process_order(client: SuperfreteClient, order: dict, semaphore: asynci
             cheapest = min(services, key=lambda s: float(s["price"]))
             logger.info(
                 f"[{order_id}] Cheapest service: {cheapest.get('name', cheapest['id'])} "
-                f"@ R${cheapest['price']}"
+                f"R${cheapest['price']}"
             )
 
             order_payload = build_order_payload(order, cheapest)
@@ -92,8 +93,12 @@ async def process_order(client: SuperfreteClient, order: dict, semaphore: asynci
             
             formatted = json.dumps(result, ensure_ascii=False, indent=2)
             separator = "\n" + "=" * 40 + "\n"
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # data/hora atual
+
             async with _file_write_lock:
                 with open(RESPONSES_FILE, "a", encoding="utf-8") as f:
+                    f.write(f"order_id: {order_id}\n")
+                    f.write(f"response_date: {timestamp}\n")
                     f.write(formatted)
                     f.write(separator)
                     
