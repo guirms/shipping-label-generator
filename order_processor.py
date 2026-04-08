@@ -1,10 +1,13 @@
 import asyncio
 import logging
+import json
 from api_client import SuperfreteClient
 
 logger = logging.getLogger(__name__)
 
 ORIGIN_POSTAL_CODE = "88804600"
+RESPONSES_FILE = "superfrete_responses.txt"
+_file_write_lock = asyncio.Lock()
 
 PACKAGE = {
     "height": 5,
@@ -86,6 +89,14 @@ async def process_order(client: SuperfreteClient, order: dict, semaphore: asynci
             result = await client.create_order(order_payload)
 
             logger.info(f"[{order_id}] Order created successfully. Response ID: {result.get('id', '?')}")
+            
+            formatted = json.dumps(result, ensure_ascii=False, indent=2)
+            separator = "\n" + "=" * 40 + "\n"
+            async with _file_write_lock:
+                with open(RESPONSES_FILE, "a", encoding="utf-8") as f:
+                    f.write(formatted)
+                    f.write(separator)
+                    
             return {"order_id": order_id, "status": "success", "result": result}
 
         except Exception as e:

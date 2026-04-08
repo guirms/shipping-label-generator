@@ -1,25 +1,3 @@
-"""
-Hardcoded orders for testing. Replace this list with a DB query when ready.
-
-Each order must contain:
-  - order_id         (str)  : unique identifier
-  - recipient_name   (str)
-  - recipient_phone  (str)
-  - recipient_email  (str)
-  - recipient_document (str): CPF or CNPJ
-  - postal_code      (str)
-  - address          (str)
-  - number           (str)
-  - complement       (str, optional)
-  - district         (str)
-  - city             (str)
-  - state            (str)  : 2-letter abbreviation e.g. "SP"
-  - product_name     (str)
-  - product_quantity (int)
-  - product_value    (float): declared value for insurance
-  - invoice_key      (str, optional)
-"""
-
 ORDERS = [
     {
         "order_id": "ORD-001",

@@ -2,6 +2,10 @@ import asyncio
 import json
 import logging
 import aiohttp
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +23,7 @@ class SuperfreteClient:
             "Authorization": token,
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "User-Agent": "SuperfreteIntegration (seu@email.com)",
+            "User-Agent": "SuperfreteIntegration " + os.getenv("SUPERFRETE_EMAIL")
         }
         self._session: aiohttp.ClientSession | None = None
 
