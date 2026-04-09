@@ -1,0 +1,10 @@
+order_id: b9791714-dbba-4625-b497-34affdf695e4
+response_date: 2026-04-09 11:52:30
+{
+  "id": "01KNSBNX16FAVKCR9QRJQY8QHF",
+  "price": 15.35,
+  "protocol": "01KNSBNX16FAVKCR9QRJQY8QHF",
+  "self_tracking": "",
+  "status": "pending"
+}
+========================================

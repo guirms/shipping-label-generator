@@ -1,4 +1,5 @@
 import asyncio
+from decimal import Decimal
 import json
 import logging
 import aiohttp
@@ -8,6 +9,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+
+class _DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return super().default(obj)
+
+def _dumps(obj: dict) -> str:
+    return json.dumps(obj, indent=2, ensure_ascii=False, cls=_DecimalEncoder)
 
 # Rate limit: conservative delay between requests (seconds)
 REQUEST_DELAY = 0.4
@@ -57,7 +67,7 @@ class SuperfreteClient:
 
         url = f"{self.base_url}/calculator"
         logger.info(f"POST {url}")
-        logger.info(f"Body: {json.dumps(payload, indent=2, ensure_ascii=False)}")
+        logger.info(f"Body:\n{_dumps(payload)}")
         logger.info(f"Headers: {json.dumps(self.headers, indent=2, ensure_ascii=False)}")
 
         async with self._session.post(url, json=payload) as resp:
@@ -83,9 +93,9 @@ class SuperfreteClient:
 
         url = f"{self.base_url}/cart"
         logger.info(f"POST {url}")
-        logger.info(f"Body: {json.dumps(order_payload, indent=2, ensure_ascii=False)}")
+        logger.info(f"Body:\n{_dumps(order_payload)}")
 
-        async with self._session.post(url, json=order_payload) as resp:
+        async with self._session.post(url, data=_dumps(order_payload), headers={"Content-Type": "application/json"}) as resp:
             if resp.status not in (200, 201):
                 error_body = await _parse_error(resp)
                 logger.error(f"Order creation error ({resp.status}):\n{error_body}")
