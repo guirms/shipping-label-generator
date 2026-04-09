@@ -35,6 +35,7 @@ async def fetch_orders() -> list[dict]:
                 u."Email" as "customer_email",
                 u."Cpf" as "customer_document",
                 a."ZipCode" as "postal_code",
+                a."State" as "state",
                 a."Street" as "address",
                 a."HouseNumber" as "number",
                 a."Extra" as "complement",

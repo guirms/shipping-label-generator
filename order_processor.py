@@ -21,7 +21,7 @@ PACKAGE = {
 CONCURRENCY_LIMIT = 5
 
 def build_order_payload(order: dict, service: dict) -> dict:
-    return {
+    return{
         "service": service["id"],
         "from": {
             "name": "Endura Run",
@@ -49,22 +49,21 @@ def build_order_payload(order: dict, service: dict) -> dict:
         },
         "products": [
             {
-                "name": order.get("product_name", "Produto"),
-                "quantity": order.get("product_quantity", 1),
-                "unitary_value": order.get("product_value", 1.00),
+                "name": order["product_name"],
+                "quantity": order["product_quantity"],
+                "unitary_value": order["product_value"]
             }
         ],
         "volumes": PACKAGE,
         "options": {
             "own_hand": False,
             "receipt": False,
-            "insurance_value": order.get("product_value", 1.00),
+            "insurance_value": order["product_value"],
             "non_commercial": True
         },
         "platform": "Endura Run"
     }
-
-
+        
 async def process_order(client: SuperfreteClient, order: dict, semaphore: asyncio.Semaphore) -> dict:
     order_id = order["order_id"]
 
@@ -87,8 +86,8 @@ async def process_order(client: SuperfreteClient, order: dict, semaphore: asynci
             )
 
             order_payload = build_order_payload(order, cheapest)
+            
             result = await client.create_order(order_payload)
-
             logger.info(f"[{order_id}] Order created successfully. Response ID: {result.get('id', '?')}")
             
             formatted = json.dumps(result, ensure_ascii=False, indent=2)
