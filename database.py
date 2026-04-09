@@ -50,7 +50,7 @@ async def fetch_orders() -> list[dict]:
                 join "Payments" p on p."Id" = s."PaymentId"
                 join "Kits" k on k."Id" = s."KitId" 
                 where s."CreatedAt" > '2026-03-10' and p."Status"=1
-                limit 1;
+                limit 2;
         """
         records = await conn.fetch(query)
         orders = [dict(record) for record in records]
